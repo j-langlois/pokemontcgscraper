@@ -129,7 +129,11 @@ function scrapeCard(url) {
             card.evolvesFrom = trim($evolved_from.find("a").text());
 
         var hp_text = $basicInfo.find(".card-hp").text();
-        card.hp = parseInt(/\d+/.exec(hp_text)[0]);
+		//Check whether hp is part of the card
+		if (hp_text.length > 0 && hp_text != 'HPNone')
+			card.hp = parseInt(/\d+/.exec(hp_text)[0]);
+		else
+			card.hp = 0;
 
         //Scrape the passive ability/poke body/poke power if they have one
         var passive_name = $(".pokemon-abilities h3");
@@ -226,7 +230,13 @@ function scrapeCard(url) {
 
         var $retreat = $stats.find(":contains(Retreat Cost)");
         card.retreatCost = $retreat.find(".energy").length;
-
+        
+        var $expansion = $stats.find(".stats-footer h3 a");
+        card.expansion = $expansion.text();
+		
+		var $id = $stats.find(".stats-footer span");
+        card.id = $id.text();
+        
         return card;
     })();
 }
